@@ -1,29 +1,58 @@
 import { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Dimensions,
+  useWindowDimensions,
+  ScrollView,
+} from "react-native";
 import PrimaryButton from "../components/ui/PrimaryButton";
 import Title from "../components/ui/Title";
 import Colors from "../util/colors";
 
+// const dimensionsWindow = Dimensions.get("window");
+
 function GameOver({ rounds, number, onNewStart }) {
+  const { width, height } = useWindowDimensions();
+  let imageSize = 300;
+  if (width < 300) {
+    imageSize = 150;
+  }
+  if (height < 400) {
+    imageSize = 80;
+  }
+  const imageStyle = {
+    width: imageSize,
+    height: imageSize,
+    borderRadius: imageSize / 2,
+  };
   return (
-    <View style={styles.rootContainer}>
-      <Title>GAME OVER!</Title>
-      <View style={styles.imageContainer}>
-        <Image
-          style={styles.image}
-          source={require("../assets/images/success.png")}
-        ></Image>
+    <ScrollView style={styles.screen}>
+      <View style={styles.rootContainer}>
+        <Title>GAME OVER!</Title>
+        <View style={[styles.imageContainer, imageStyle]}>
+          <Image
+            style={styles.image}
+            source={require("../assets/images/success.png")}
+          ></Image>
+        </View>
+        <Text style={styles.summaryText}>
+          Your phone needed <Text style={styles.highlight}>{rounds}</Text>{" "}
+          rounds to guess the number{" "}
+          <Text style={styles.highlight}>{number}</Text>.
+        </Text>
+        <PrimaryButton buttonText={"Start New Game"} onPress={onNewStart} />
       </View>
-      <Text style={styles.summaryText}>
-        Your phone needed <Text style={styles.highlight}>{rounds}</Text> rounds
-        to guess the number <Text style={styles.highlight}>{number}</Text>.
-      </Text>
-      <PrimaryButton buttonText={"Start New Game"} onPress={onNewStart} />
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+  },
   rootContainer: {
     flex: 1,
     padding: 24,
@@ -32,9 +61,9 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     overflow: "hidden",
-    borderRadius: 150,
-    width: 300,
-    height: 300,
+    // borderRadius: dimensionsWindow.width < 380 ? 75 : 150,
+    // width: dimensionsWindow.width < 380 ? 150 : 300,
+    // height: dimensionsWindow.width < 380 ? 150 : 300,
     borderWidth: 3,
     borderColor: Colors.primary800,
     margin: 36,

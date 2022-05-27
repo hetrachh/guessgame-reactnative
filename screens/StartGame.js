@@ -1,13 +1,27 @@
 import { useState } from "react";
-import { TextInput, View, StyleSheet, Alert } from "react-native";
+import {
+  TextInput,
+  View,
+  StyleSheet,
+  Alert,
+  Dimensions,
+  useWindowDimensions,
+  KeyboardAvoidingView,
+  ScrollView,
+} from "react-native";
 import PrimaryButton from "../components/ui/PrimaryButton";
 import Colors from "../util/colors";
 import Title from "../components/ui/Title";
 import Card from "../components/ui/card";
 import InstructionText from "../components/ui/InstructionText";
 
+const deviceDimension = Dimensions.get("window");
+
 function StartGame({ onStartGame }) {
   const [number, setNumber] = useState("");
+
+  const { width, height } = useWindowDimensions();
+
   function getNumber(number) {
     setNumber(number);
   }
@@ -25,46 +39,55 @@ function StartGame({ onStartGame }) {
 
     onStartGame(numbers);
   }
+
+  const marginTop = height < 380 ? 30 : 100;
   return (
-    <View style={styles.rootContainer}>
-      <Title>Guess My Number</Title>
-      <Card style={styles.inputContainer}>
-        <InstructionText>Enter a number</InstructionText>
-        <TextInput
-          style={styles.textInput}
-          maxLength={2}
-          keyboardType="number-pad"
-          autoCapitalize="none"
-          autoCorrect={false}
-          onChangeText={getNumber}
-          value={number}
-        />
-        <View style={styles.buttonsContainer}>
-          <View style={{ flex: 1 }}>
-            <PrimaryButton
-              buttonText="Reset"
-              onPress={onResetPress}
-              androidRippleEffect={styles.androidRippelEffect}
-              buttonOuterContainer={styles.buttonOuterContainer}
-              buttonInnerContainer={styles.buttonInnerContainer}
-              buttonTextContainer={styles.buttonTextContainer}
+    <ScrollView style={styles.screen}>
+      <KeyboardAvoidingView style={styles.screen} behavior="position">
+        <View style={[styles.rootContainer, { marginTop: marginTop }]}>
+          <Title>Guess My Number</Title>
+          <Card style={styles.inputContainer}>
+            <InstructionText>Enter a number</InstructionText>
+            <TextInput
+              style={styles.textInput}
+              maxLength={2}
+              keyboardType="number-pad"
+              autoCapitalize="none"
+              autoCorrect={false}
+              onChangeText={getNumber}
+              value={number}
             />
-          </View>
-          <View style={{ flex: 1 }}>
-            <PrimaryButton buttonText="Confirm" onPress={onConfirmPress} />
-          </View>
+            <View style={styles.buttonsContainer}>
+              <View style={{ flex: 1 }}>
+                <PrimaryButton
+                  buttonText="Reset"
+                  onPress={onResetPress}
+                  androidRippleEffect={styles.androidRippelEffect}
+                  buttonOuterContainer={styles.buttonOuterContainer}
+                  buttonInnerContainer={styles.buttonInnerContainer}
+                  buttonTextContainer={styles.buttonTextContainer}
+                />
+              </View>
+              <View style={{ flex: 1 }}>
+                <PrimaryButton buttonText="Confirm" onPress={onConfirmPress} />
+              </View>
+            </View>
+          </Card>
         </View>
-      </Card>
-    </View>
+      </KeyboardAvoidingView>
+    </ScrollView>
   );
 }
 
 export default StartGame;
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+  },
   rootContainer: {
     flex: 1,
-    marginTop: 100,
+    // marginTop: deviceDimension.height < 380 ? 30 : 100,
     alignItems: "center",
   },
   inputContainer: {
